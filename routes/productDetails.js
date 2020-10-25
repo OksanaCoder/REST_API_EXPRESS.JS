@@ -12,6 +12,15 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const productById = await Product.findById(req.params.id)
+        res.send(productById)
+    } catch (error) {
+        next(error)
+    }
+})
+
 router.post('/', async (req, res, next) => {
    
     try {
@@ -24,6 +33,37 @@ router.post('/', async (req, res, next) => {
         next(error)
     }
   
+})
+
+router.put("/:id", async (req, res, next) => {
+    try {
+      const product = await Product.findByIdAndUpdate(req.params.id, req.body)
+      if (product) {
+        res.send("Ok")
+      } else {
+        const error = new Error(`product with id ${req.params.id} not found`)
+        error.httpStatusCode = 404
+        next(error)
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+       const removedPost =  await Product.findByIdAndDelete(req.params.id)
+       if (removedPost) {
+        res.send("Deleted")
+       }
+       else {
+        const error = new Error(`product with id ${req.params.id} not found`)
+        error.httpStatusCode = 404
+        next(error)
+      }
+    } catch(error) {
+        next(error)
+    }
 })
 
 module.exports = router
